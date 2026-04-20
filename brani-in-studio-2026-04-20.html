@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brani in Studio · Coro Monte Zugna</title>
+<meta name="description" content="Elenco dei brani attualmente in studio e preparazione del Coro Monte Zugna. Aggiornato al 20 aprile 2026.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  :root {
+    --bg: #0f1419;
+    --bg-elevated: #1a2028;
+    --border: #2a3340;
+    --text: #f5f1e8;
+    --text-muted: #9ca8b8;
+    --gold: #d4a857;
+    --gold-bright: #e8c178;
+    --studio: #d4a857;
+    --prep: #6b9bd1;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 80px; }
+  header.page-header {
+    text-align: center;
+    padding: 32px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .header-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .header-text { flex: 1; min-width: 280px; max-width: 640px; text-align: center; }
+  .qr-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: #f5f1e8;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .qr-block svg { display: block; width: 140px; height: 140px; }
+  .qr-caption {
+    font-size: 11px;
+    color: #0f1419;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  @media print {
+    body { background: #fff; color: #000; }
+    .qr-block { border-color: #000; }
+  }
+  .kicker {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(28px, 5vw, 44px);
+    margin: 0 0 12px;
+    color: var(--text);
+    font-weight: 400;
+    letter-spacing: -0.5px;
+  }
+  h1 em { color: var(--gold); font-style: italic; }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+  .stats {
+    display: inline-flex;
+    gap: 24px;
+    padding: 12px 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .stats strong { color: var(--gold); font-weight: 600; }
+  .table-wrap {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .scroll-x { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+  }
+  thead th {
+    background: rgba(212, 168, 87, 0.08);
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th.center { text-align: center; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(212, 168, 87, 0.04); }
+  td { padding: 16px; vertical-align: middle; }
+  .cell-titolo { min-width: 220px; }
+  .titolo {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+  .autore { color: var(--text-muted); font-size: 13px; font-style: italic; }
+  .badges-mobile { display: none; margin-top: 8px; }
+  .cell-action { text-align: center; min-width: 100px; }
+  .cell-voice { text-align: center; min-width: 90px; }
+  .voice-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .voice-content { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge-studio { background: rgba(212, 168, 87, 0.15); color: var(--studio); border: 1px solid rgba(212, 168, 87, 0.3); }
+  .badge-prep { background: rgba(107, 155, 209, 0.15); color: var(--prep); border: 1px solid rgba(107, 155, 209, 0.3); }
+  .chip {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .chip-pdf { background: rgba(212, 168, 87, 0.12); color: var(--gold-bright); border: 1px solid rgba(212, 168, 87, 0.25); }
+  .chip-pdf:hover { background: rgba(212, 168, 87, 0.22); }
+  .chip-audio { background: rgba(107, 155, 209, 0.12); color: #8fb5dd; border: 1px solid rgba(107, 155, 209, 0.25); }
+  .chip-audio:hover { background: rgba(107, 155, 209, 0.22); }
+  .esecutore { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+  .muted { color: var(--text-muted); opacity: 0.4; font-size: 14px; }
+  .info-box {
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: rgba(212, 168, 87, 0.06);
+    border: 1px solid rgba(212, 168, 87, 0.2);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .info-box strong { color: var(--text); }
+  footer.page-footer {
+    margin-top: 60px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  footer.page-footer a { color: var(--gold); text-decoration: none; }
+  footer.page-footer a:hover { text-decoration: underline; }
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  @media (max-width: 720px) {
+    .wrap { padding: 20px 12px 60px; }
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+    tbody tr {
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-elevated);
+    }
+    .table-wrap { background: transparent; border: none; padding: 0; }
+    td { padding: 8px 0; border: none; }
+    .cell-stato { display: none; }
+    .badges-mobile { display: block; }
+    .cell-action, .cell-voice { text-align: left; min-width: 0; }
+    .cell-action::before, .cell-voice::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--gold);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .voice-content { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-header">
+      <div class="header-grid">
+        <div class="header-text">
+          <div class="kicker">Coro Monte Zugna · dal 1984</div>
+          <h1>Brani <em>in Studio</em></h1>
+          <p class="subtitle">Il repertorio attualmente in lavorazione dal coro. Partiture e tracce audio sono accessibili direttamente dai link.</p>
+          <div class="stats">
+            <span><strong>12</strong> brani totali</span>
+            <span><strong>4</strong> in studio</span>
+            <span><strong>8</strong> in preparazione</span>
+          </div>
+        </div>
+        <a class="qr-block" href="https://coristimontezugna.lovable.app" target="_blank" rel="noopener" aria-label="Apri il portale del Coro Monte Zugna">
+          <svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 31 31" shape-rendering="crispEdges"><path fill="#f5f1e8" d="M0 0h31v31H0z"/><path stroke="#0f1419" d="M1 1.5h7m1 0h1m3 0h1m1 0h1m1 0h1m1 0h3m1 0h7M1 2.5h1m5 0h1m1 0h1m1 0h1m3 0h1m3 0h1m3 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m3 0h1m1 0h2m2 0h1m1 0h3m1 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h2m5 0h3m2 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m2 0h8m2 0h1m2 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m2 0h1m2 0h1m1 0h1m2 0h3m2 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h2m1 0h1m1 0h2m2 0h1m1 0h2M1 9.5h1m1 0h2m1 0h3m1 0h1m1 0h4m1 0h3m1 0h1m1 0h1m2 0h1m1 0h2M9 10.5h2m6 0h1m1 0h3m1 0h3m3 0h1M1 11.5h2m1 0h2m1 0h2m2 0h3m1 0h1m2 0h1m8 0h2M1 12.5h1m1 0h3m4 0h1m2 0h4m2 0h4m2 0h1m3 0h1M1 13.5h1m1 0h1m3 0h1m3 0h1m1 0h1m4 0h2m6 0h2M2 14.5h1m2 0h2m2 0h2m1 0h3m1 0h1m3 0h1m1 0h2m3 0h3M2 15.5h1m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h3m1 0h2m1 0h1m1 0h3M5 16.5h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h1m1 0h2m2 0h1m2 0h1M1 17.5h1m2 0h2m1 0h1m1 0h1m1 0h1m1 0h1m5 0h1m2 0h1m2 0h2m1 0h1M10 18.5h3m1 0h1m1 0h1m1 0h1m2 0h1m2 0h1m1 0h3M1 19.5h1m3 0h1m1 0h2m2 0h1m4 0h1m5 0h3m2 0h1M3 20.5h4m1 0h1m1 0h1m1 0h1m4 0h2m1 0h1m1 0h1m2 0h1m1 0h1M2 21.5h2m2 0h2m3 0h1m2 0h1m1 0h4m1 0h7M9 22.5h2m1 0h1m1 0h2m1 0h3m1 0h1m3 0h5M1 23.5h7m1 0h1m1 0h2m1 0h1m4 0h3m1 0h1m1 0h2m1 0h1M1 24.5h1m5 0h1m1 0h1m1 0h3m2 0h2m1 0h1m1 0h1m3 0h2m1 0h2M1 25.5h1m1 0h3m1 0h1m2 0h2m3 0h2m1 0h1m2 0h5m1 0h1M1 26.5h1m1 0h3m1 0h1m1 0h1m1 0h10m1 0h1m1 0h3m2 0h1M1 27.5h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h2m2 0h2m1 0h1m2 0h1m2 0h1m1 0h1M1 28.5h1m5 0h1m2 0h1m1 0h2m2 0h1m2 0h1m1 0h1m1 0h2m1 0h1m1 0h1M1 29.5h7m1 0h2m1 0h1m2 0h1m3 0h4m1 0h1m3 0h1"/></svg>
+
+          <span class="qr-caption">Portale del Coro</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="table-wrap">
+        <div class="scroll-x">
+          <table>
+            <thead>
+              <tr>
+                <th>Brano</th>
+                <th>Stato</th>
+                <th class="center">Partitura</th>
+                <th class="center">Esecuzione</th>
+                <th class="center">T1</th>
+                <th class="center">T2</th>
+                <th class="center">BR</th>
+                <th class="center">BS</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Doman l&#039;è festa</div>
+            <div class="autore">L. Pigarelli</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1kK__wCEIBaaZqOIUv5mipz6rAV2fUCWm/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://youtu.be/HN8_W3DtBRc?si=jmz4IPi10hKlfDHp" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1o2z4tGAP1ZZKb2uyvGukHcOhPriJMvT0/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1DT_xonhIIuZtxpmLD-scInj66CrErVMb/view?usp=sharing" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1VxJrWrBt8Ec2lfoqTi8q12QcCDVVTZlA/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Dove</div>
+            <div class="autore">Marco Maiero</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/16PJ3GEMYQ0Qz8HBw6PXvZzLCT_hI4nSB/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://youtu.be/su2LpC0-mzA" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Fiori de cristal</div>
+            <div class="autore">Roberto Gianotti</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1WFdmY1GmbAKSOhy0YI354Q-X-cYk9quW/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://youtu.be/az2dP9Ip0m0" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">La rosa delle Alpi</div>
+            <div class="autore">Franco Sartori</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1mJqBwJSTnavfH3295Z2PcaMsWKfKfUdX/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://youtu.be/mZVtKHsGWaI" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">La tera del nono</div>
+            <div class="autore">Camillo Moser ; testo Italo Varner</div>
+            <div class="badges-mobile"><span class="badge badge-studio">In Studio</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-studio">In Studio</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1r58VAp8qZ8GpqNnv3_tb40lfGOXCqxNO/view?usp=drive_link" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://drive.google.com/file/d/1k2C55K5PpX1uluzrh5XJrIMqsMhblMQi/view?usp=drive_link" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1oYECknvzKLV5evd8vRObl6_a9xw12kIJ/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1yACwcGs1kJRs-xkLW2MXkHIuKnLCFBkU/view?usp=sharing" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1VKGEyFuPOA8FFLNWSXl1SZ-Ya_z5GYZs/view?usp=sharing" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">MAREMMA</div>
+            <div class="autore">Arm. Gianni Caracristi</div>
+            <div class="badges-mobile"><span class="badge badge-studio">In Studio</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-studio">In Studio</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1jD3iqUUZ9vQNAwL4gMVuilw7V2D9fbul/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://drive.google.com/file/d/1_EYgss0mjiezX1DHoywllQhv-43wEvqv/view?usp=drive_link" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Montagna Amara</div>
+            <div class="autore">Roberto di Marino</div>
+            <div class="badges-mobile"><span class="badge badge-studio">In Studio</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-studio">In Studio</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1XkYg8XSmXweCjHhZsweudCtlb-ciQntn/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://drive.google.com/file/d/1FkFAN71I4y9fVeFkbIr1Txw6bB0g5a7v/view?usp=sharing" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1ZqvS6WNpwLcn5g0lPtKqkn1BGNbnq0tg/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1HOyVj-aYlqWAykr8YpkBxFUPAU3SbTtj/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1tP043xiM55PbGawC0bzicKULh9XThs4T/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1xnu61JahigpWA4M7GUQp0uB5r9uNSkqM/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Oh Montagne</div>
+            <div class="autore">Gianni Malatesta</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1yK3bQfuaZwRMhXBxWYix5fCK65Elt0rb/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://youtu.be/tfXTkf72aIc" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1SzhX0JYsazTQvyL9wFZAhsJXokGURVhE/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/1Ofx1IP12J7CCfLOWOCq2A6TpJfLFBIWQ/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://drive.google.com/file/d/17WzYlMKP-74nD_Ys4A-Gf4rGj0FceXcy/view?usp=drive_link" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Resterà la luce</div>
+            <div class="autore">Giorgio Susana</div>
+            <div class="badges-mobile"><span class="badge badge-studio">In Studio</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-studio">In Studio</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/spartiti/B-043_restera_la_luce/partitura_1767352833498.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzcGFydGl0aS9CLTA0M19yZXN0ZXJhX2xhX2x1Y2UvcGFydGl0dXJhXzE3NjczNTI4MzM0OTgucGRmIiwiaWF0IjoxNzc2Njg0MDQyLCJleHAiOjE4MDgyMjAwNDJ9.2FyYfIZtozqvurMi_ntREFiYoVxYsuBV5hwLFvaGszM" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://andreasimoncelli63-debug.github.io/CoroMZmusica/20260328_MZ_Resterà_la_luce.mp3" target="_blank" rel="noopener">▶ Ascolta</a><div class="esecutore">Coro Monte Zugna</div></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/audio/B-043_restera_la_luce/t1_1767352889448.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhdWRpby9CLTA0M19yZXN0ZXJhX2xhX2x1Y2UvdDFfMTc2NzM1Mjg4OTQ0OC5tcDMiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.digk1QDMSa1vKWD5N8_kgoAm1dpHYxVd-czg8Ode66g" target="_blank" rel="noopener">🎵 MP3</a><a class="chip chip-pdf" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/spartiti/c497332e-8b72-451c-8598-66a0808bf7e6_restera_la_luce/part_t1_1767353577330.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzcGFydGl0aS9jNDk3MzMyZS04YjcyLTQ1MWMtODU5OC02NmEwODA4YmY3ZTZfcmVzdGVyYV9sYV9sdWNlL3BhcnRfdDFfMTc2NzM1MzU3NzMzMC5wZGYiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.o7UBk_rtFUmON_ajYNgstpz4NJZl7hsstRbdTQ7N0s0" target="_blank" rel="noopener">📄 PDF</a></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/audio/B-043_restera_la_luce/t2_1767352897730.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhdWRpby9CLTA0M19yZXN0ZXJhX2xhX2x1Y2UvdDJfMTc2NzM1Mjg5NzczMC5tcDMiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.tVcr2kz7QruPBmaetr7_81xUmUVmanuOaC9ed0TYb18" target="_blank" rel="noopener">🎵 MP3</a><a class="chip chip-pdf" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/spartiti/c497332e-8b72-451c-8598-66a0808bf7e6_restera_la_luce/part_t2_1767353588216.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzcGFydGl0aS9jNDk3MzMyZS04YjcyLTQ1MWMtODU5OC02NmEwODA4YmY3ZTZfcmVzdGVyYV9sYV9sdWNlL3BhcnRfdDJfMTc2NzM1MzU4ODIxNi5wZGYiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.MLFDLDMCTBsJAykr6IfGZ2V4b7EDGd4yb_-Wd-OPoGI" target="_blank" rel="noopener">📄 PDF</a></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/audio/B-043_restera_la_luce/br_1767352905822.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhdWRpby9CLTA0M19yZXN0ZXJhX2xhX2x1Y2UvYnJfMTc2NzM1MjkwNTgyMi5tcDMiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.bQsRolbpCDpqbpbWsISa6duaKJSxPfXLPzWr9IBRgNM" target="_blank" rel="noopener">🎵 MP3</a><a class="chip chip-pdf" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/spartiti/c497332e-8b72-451c-8598-66a0808bf7e6_restera_la_luce/part_br_1767353595679.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzcGFydGl0aS9jNDk3MzMyZS04YjcyLTQ1MWMtODU5OC02NmEwODA4YmY3ZTZfcmVzdGVyYV9sYV9sdWNlL3BhcnRfYnJfMTc2NzM1MzU5NTY3OS5wZGYiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.RdUYlfPI0KayDjSamCUIhhqp_ou9q4l62Gkq5sTSYao" target="_blank" rel="noopener">📄 PDF</a></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/audio/B-043_restera_la_luce/bs_1767352916207.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhdWRpby9CLTA0M19yZXN0ZXJhX2xhX2x1Y2UvYnNfMTc2NzM1MjkxNjIwNy5tcDMiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.4eIu5ZTJisACd8nx-0_QqVu4JWKt-np413nSng6g8VI" target="_blank" rel="noopener">🎵 MP3</a><a class="chip chip-pdf" href="https://xoytrensnvkoqlnzaokn.supabase.co/storage/v1/object/sign/spartiti/c497332e-8b72-451c-8598-66a0808bf7e6_restera_la_luce/part_bs_1767353602624.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83ODc1MjQzYy0yNDBhLTQ3ZTUtOWVmZC04NzhkNzdkNzI1MjUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJzcGFydGl0aS9jNDk3MzMyZS04YjcyLTQ1MWMtODU5OC02NmEwODA4YmY3ZTZfcmVzdGVyYV9sYV9sdWNlL3BhcnRfYnNfMTc2NzM1MzYwMjYyNC5wZGYiLCJpYXQiOjE3NzY2ODQwNDIsImV4cCI6MTgwODIyMDA0Mn0.wQ8kpeRZAIbfkuNT15_rSgbJ8C1P2Wdvh3cG0UAUi1g" target="_blank" rel="noopener">📄 PDF</a></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Tanti ghe n&#039;è</div>
+            <div class="autore">L. Pigarelli</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1sx26fwTBJ8zbO9IQp6l3WtoOS9D7kcTj/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://youtu.be/kWJ7R5687_c?si=DdB3fqCkRetcnFJf" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Verdi campi addio</div>
+            <div class="autore">C. Moser</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><span class="muted">—</span></td>
+          <td class="cell-action" data-label="Esecuzione"><a class="chip chip-audio" href="https://drive.google.com/file/d/1ibLvezu36yqLuCqnR2NzMPdZDxGNH369/view?usp=sharing" target="_blank" rel="noopener">▶ Ascolta</a></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><a class="chip chip-audio" href="https://tecadigitale.cai.it/audio/mp3/000123763.mp3" target="_blank" rel="noopener">🎵 MP3</a></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td>
+        </tr>
+      
+        <tr>
+          <td class="cell-titolo">
+            <div class="titolo">Vuoi Tu Venire in Merica</div>
+            <div class="autore">Popolare Trentino | A. Mascagni</div>
+            <div class="badges-mobile"><span class="badge badge-prep">In Preparazione</span></div>
+          </td>
+          <td class="cell-stato"><span class="badge badge-prep">In Preparazione</span></td>
+          <td class="cell-action" data-label="Partitura"><a class="chip chip-pdf" href="https://drive.google.com/file/d/1CnnqOrD1QjsxqFFbJbUDgoiRopPeoqV8/view?usp=sharing" target="_blank" rel="noopener">📄 Apri</a></td>
+          <td class="cell-action" data-label="Esecuzione"><span class="muted">—</span></td>
+          <td class="cell-voice" data-label="T1">
+                  <div class="voice-label">T1</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="T2">
+                  <div class="voice-label">T2</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BR">
+                  <div class="voice-label">BR</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td><td class="cell-voice" data-label="BS">
+                  <div class="voice-label">BS</div>
+                  <div class="voice-content"><span class="muted">—</span></div>
+                </td>
+        </tr>
+      
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>ℹ️ Materiali ad accesso diretto:</strong> i link a partiture (PDF) e tracce audio (MP3) sono attivi senza necessità di login. Pagina pensata per essere condivisa con i coristi.
+      </div>
+
+    <footer class="page-footer">
+      <p>Pagina generata il <strong>20 aprile 2026</strong></p>
+      <p><a href="mailto:coromontezugna@gmail.com">coromontezugna@gmail.com</a> · Coro Monte Zugna</p>
+    </footer>
+  </div>
+</body>
+</html>
